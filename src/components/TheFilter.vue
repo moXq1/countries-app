@@ -11,6 +11,7 @@
       <li v-for="r in regions" :key="r" @click="getRegion" :data-country="r">
         {{ r }}
       </li>
+      <li @click="getRegion" data-country="all">All</li>
     </ul>
   </div>
 </template>
@@ -20,10 +21,11 @@ export default {
   data() {
     return {
       isOpen: false,
-      regions: ["Africa", "America", "Asia", "Europe", "Oceania"],
-      filter: "Filter by Region",
+      regions: ["Africa", "Americas", "Asia", "Europe", "Oceania"],
+      filter: this.filterData,
     };
   },
+  props: ["filterData"],
   methods: {
     getRegion(e) {
       this.filter = e.target.dataset.country;

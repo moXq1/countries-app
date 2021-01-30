@@ -18,9 +18,10 @@
 export default {
   data() {
     return {
-      inputData: "",
+      inputData: this.findInput,
     };
   },
+  props: ["findInput"],
   watch: {
     inputData() {
       this.$emit("change-input", this.inputData);

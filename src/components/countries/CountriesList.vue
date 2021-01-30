@@ -4,7 +4,7 @@
       @get-details="getD"
       v-for="country in countries"
       :key="country.id"
-      :id="country.id"
+      :id="country.name"
       :flag="country.flag"
       :name="country.name"
       :population="country.population"
@@ -45,6 +45,12 @@ ul {
   margin: 3rem 0;
   gap: 1rem;
   place-content: center;
+}
+
+@media (min-width: 1800px) {
+  ul {
+    grid-template-columns: repeat(6, 260px);
+  }
 }
 
 @media (max-width: 1160px) {

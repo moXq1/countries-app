@@ -1,7 +1,7 @@
 <template>
   <header>
     <nav>
-      <h2>Where in the World?</h2>
+      <h2 @click="$emit('main-page')">Where in the World?</h2>
 
       <label for="checkbox">
         <input type="checkbox" id="checkbox" @change="switchMode" />
@@ -17,7 +17,7 @@
 <script>
 export default {
   props: ["mode"],
-  emits: ["change-theme"],
+  emits: ["change-theme", "main-page"],
   methods: {
     switchMode() {
       let m = "";
@@ -51,6 +51,7 @@ header {
 h2 {
   font-weight: 800;
   font-size: 24px;
+  cursor: pointer;
 }
 
 .container {
@@ -72,6 +73,12 @@ img {
   width: 100%;
   height: 100%;
   filter: invert(var(--i));
+}
+
+@media (min-width: 1800px) {
+  nav {
+    margin: 0 4rem;
+  }
 }
 
 @media (max-width: 460px) {

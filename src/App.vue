@@ -1,64 +1,126 @@
 <template>
-  <the-header :mode="mode" @change-theme="changeTheme"></the-header>
-  <section v-if="!detailOpen">
+  <the-header
+    :mode="mode"
+    @change-theme="changeTheme"
+    @main-page="reset"
+  ></the-header>
+  <the-loader v-if="isLoading"></the-loader>
+  <section v-else-if="!detailOpen && !isLoading">
     <the-wrapper>
-      <the-search @change-input="getInput"></the-search>
-      <the-filter @get-filter="getFilter"></the-filter>
+      <the-search @change-input="getInput" :findInput="findInput"></the-search>
+      <the-filter @get-filter="getFilter" :filterData="filterData"></the-filter>
     </the-wrapper>
 
     <countries-list
-      :countries="countries"
+      :countries="renderCountries"
       @get-details="details"
     ></countries-list>
+    <items-switch
+      v-if="!findInput"
+      @change-page="changePage"
+      :numOfCountries="countries.length"
+      :itemPerPage="itemPerPage"
+      :curPage="page"
+    ></items-switch>
   </section>
 
-  <section v-else>
+  <section v-else-if="detailOpen && !isLoading">
     <the-wrapper>
       <button @click="detailOpen = false">
         <div class="im">
           <img src="./assets/chevron-back-outline.svg" alt="" />
         </div>
-        Back
+        Countries
       </button></the-wrapper
     >
+    <item-details
+      v-bind="countryDetails"
+      @get-neighbour="renderNeighbour"
+    ></item-details>
   </section>
 </template>
 
 <script>
 import CountriesList from "./components/countries/CountriesList.vue";
+import ItemDetails from "./components/countries/ItemDetails.vue";
 import TheWrapper from "./components/TheWrapper.vue";
+import ItemsSwitch from "./components/ItemsSwitch.vue";
 
 export default {
-  components: { CountriesList, TheWrapper },
+  components: { CountriesList, TheWrapper, ItemDetails, ItemsSwitch },
   data() {
     return {
       mode: "light",
       findInput: "",
-      filterData: "",
+      filterData: "Filter by Region",
       countries: [],
+      renderCountries: [],
       countryDetails: {},
       detailOpen: false,
+      page: 1,
+      itemPerPage: 12,
+      isLoading: false,
     };
   },
+  watch: {
+    findInput(cur) {
+      if (cur === "") {
+        this.isLoading = true;
+        this.renderCountries = this.slice;
+        this.isLoading = false;
+      }
+    },
+  },
   async created() {
+    this.isLoading = true;
     await this.countriesRequest();
-    this.countries = this.countries.slice(0, 11);
+    this.renderCountries = this.slice;
+    this.isLoading = false;
   },
   methods: {
     changeTheme(m) {
       this.mode = m;
       document.documentElement.setAttribute("data-theme", this.mode);
     },
+    async reset() {
+      this.isLoading = true;
+      this.findInput = "";
+      this.filterData = "Filter by Region";
+      await this.countriesRequest();
+      this.renderCountries = this.slice;
+      this.countryDetails = {};
+      this.detailOpen = false;
+      this.page = 1;
+      this.itemPerPage = 12;
+      this.isLoading = false;
+    },
+    changePage(page) {
+      this.isLoading = true;
+
+      this.page = page;
+      setTimeout(() => {
+        this.renderCountries = this.slice;
+        this.isLoading = false;
+      }, 100);
+    },
     getInput(inp) {
+      this.isLoading = true;
       this.findInput = inp;
+      const d = this.countries.filter((el) => el.name.includes(this.findInput));
+      this.renderCountries = d;
+      this.isLoading = false;
     },
     async getFilter(filter) {
+      this.isLoading = true;
       this.filterData = filter;
       await this.countriesRequest(this.filterData);
+      this.renderCountries = this.slice;
+      this.isLoading = false;
     },
     async countriesRequest(region = null) {
       let resp;
-      if (region) {
+
+      if (region && region !== "all") {
         resp = await fetch(`https://restcountries.eu/rest/v2/region/${region}`);
       } else {
         resp = await fetch("https://restcountries.eu/rest/v2/all");
@@ -68,9 +130,41 @@ export default {
     },
 
     details(id) {
-      this.countryDetails = this.countries.find((el) => el.id === id);
+      this.isLoading = true;
+      const obj = this.countries.find((el) => el.name === id);
       this.detailOpen = true;
-      console.log(this.countryDetails);
+      this.countryDetails = {
+        flag: obj.flag,
+        name: obj.name,
+        nativeName: obj.nativeName,
+        population: obj.population,
+        region: obj.region,
+        subregion: obj.subregion,
+        capital: obj.capital,
+        topLevelDomain: obj.topLevelDomain.join(","),
+        currencies: obj.currencies.map((el) => el.name).join(","),
+        languages: obj.languages.map((el) => el.name).join(","),
+        border: obj.borders.map((el) => {
+          let c = this.countries.find((e) => e.alpha3Code === el);
+          return c.name;
+        }),
+      };
+      this.isLoading = false;
+    },
+    renderNeighbour(neighbour) {
+      this.isLoading = true;
+      this.details(neighbour);
+      this.isLoading = false;
+    },
+  },
+  computed: {
+    slice() {
+      console.log();
+      window.scrollTo(0, 0);
+      return this.countries.slice(
+        (this.page - 1) * this.itemPerPage,
+        this.itemPerPage * this.page
+      );
     },
   },
 };
@@ -133,9 +227,11 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  outline: none;
 }
 
-button:hover {
+button:hover,
+button:active {
   color: #dbadea;
 }
 

@@ -12,6 +12,12 @@
   align-items: flex-start;
 }
 
+@media (min-width: 1800px) {
+  .wrapper {
+    margin: 3rem 4rem;
+  }
+}
+
 @media (max-width: 620px) {
   .wrapper {
     flex-direction: column;

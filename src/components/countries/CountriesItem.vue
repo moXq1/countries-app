@@ -20,6 +20,7 @@ export default {
   emits: ["get-details"],
   methods: {
     getDetails() {
+      console.log(this.id);
       this.$emit("get-details", this.id);
     },
   },
@@ -62,6 +63,7 @@ img {
   height: 100%;
   border-radius: 5px 5px 0 0;
   object-fit: cover;
+  filter: invert(0);
 }
 
 .content {

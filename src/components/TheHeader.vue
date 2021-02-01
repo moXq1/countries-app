@@ -6,7 +6,7 @@
       <label for="checkbox">
         <input type="checkbox" id="checkbox" @change="switchMode" />
         <div class="container">
-          <img src="../assets/moon-outline.svg" alt="" />
+          <img src="../assets/moon-outline.svg" alt="moon icon"  width="20" height="20"/>
         </div>
         <p>Dark Mode</p>
       </label>

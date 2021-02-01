@@ -3,7 +3,7 @@
     <div class="prev" v-if="curPage !== 1" @click="prev">
       <button>
         <div class="im">
-          <img src="../assets/chevron-back-outline.svg" alt="" />
+          <img src="../assets/chevron-back-outline.svg" alt="" width="20" height="20"/>
         </div>
         Prev
       </button>
@@ -12,7 +12,7 @@
       <button>
         Next
         <div class="im">
-          <img src="../assets/chevron-forward-outline.svg" alt="" />
+          <img src="../assets/chevron-forward-outline.svg" alt=""  width="20" height="20"/>
         </div>
       </button>
     </div>

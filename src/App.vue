@@ -4,6 +4,7 @@
     @change-theme="changeTheme"
     @main-page="reset"
   ></the-header>
+
   <the-loader v-if="isLoading"></the-loader>
   <section v-else-if="!detailOpen && !isLoading">
     <the-wrapper>
@@ -38,6 +39,10 @@
       @get-neighbour="renderNeighbour"
     ></item-details>
   </section>
+
+  <the-error :show="isError" title="An error occured!" @close="isError = false">
+    <p>{{ errorMessage }}</p>
+  </the-error>
 </template>
 
 <script>
@@ -60,6 +65,8 @@ export default {
       page: 1,
       itemPerPage: 12,
       isLoading: false,
+      isError: false,
+      errorMessage: null,
     };
   },
   watch: {
@@ -119,14 +126,41 @@ export default {
     },
     async countriesRequest(region = null) {
       let resp;
+      const reg = JSON.parse(localStorage.getItem("region"));
+      const cc = JSON.parse(localStorage.getItem("countries"));
 
-      if (region && region !== "all") {
-        resp = await fetch(`https://restcountries.eu/rest/v2/region/${region}`);
+      if (cc) {
+        this.countries = cc;
+        localStorage.removeItem("countries");
+        if (reg) {
+          this.filterData = reg;
+        }
+        localStorage.removeItem("countries");
+        localStorage.removeItem("region");
       } else {
-        resp = await fetch("https://restcountries.eu/rest/v2/all");
-      }
+        try {
+          if (region && region !== "all") {
+            resp = await fetch(
+              `https://restcountries.eu/rest/v2/region/${region}`
+            );
+          } else {
+            resp = await fetch("https://restcountries.eu/rest/v2/all");
+          }
 
-      this.countries = await resp.json();
+          const respData = await resp.json();
+
+          if (!resp.ok) {
+            throw new Error(respData.message || "Failed to send Request!");
+          }
+
+          this.countries = respData;
+          localStorage.setItem("countries", JSON.stringify(this.countries));
+          localStorage.setItem("region", JSON.stringify(region));
+        } catch (er) {
+          this.isError = true;
+          this.errorMessage = er.message || "Something Failed";
+        }
+      }
     },
 
     details(id) {

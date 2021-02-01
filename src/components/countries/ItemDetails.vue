@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="flag">
-      <img :src="flag" alt="flag" />
+      <img :src="flag" alt="flag" width="640" height="360"/>
     </div>
 
     <div class="details">

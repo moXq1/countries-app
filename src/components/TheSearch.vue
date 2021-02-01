@@ -1,11 +1,12 @@
 <template>
   <div class="wrap">
-    <label>
+    <label for='search'>
       <div class="container">
-        <img src="../assets/search-outline.svg" alt="search icon" />
+        <img src="../assets/search-outline.svg" alt="search icon"  width="20" height="20"/>
       </div>
     </label>
     <input
+    id='search'
       type="text"
       v-model="inputData"
       placeholder="Search for a country..."

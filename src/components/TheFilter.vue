@@ -3,7 +3,12 @@
     <div class="filter">
       <p>{{ filter }}</p>
       <div class="container">
-        <img src="../assets/chevron-down-outline.svg" alt="chevron down"  width="20" height="20"/>
+        <img
+          src="../assets/chevron-down-outline.svg"
+          alt="chevron down"
+          width="20"
+          height="20"
+        />
       </div>
     </div>
 

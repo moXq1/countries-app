@@ -93,6 +93,8 @@ export default {
       this.isLoading = true;
       this.findInput = "";
       this.filterData = "Filter by Region";
+      localStorage.removeItem("countries");
+      localStorage.removeItem("region");
       await this.countriesRequest();
       this.renderCountries = this.slice;
       this.countryDetails = {};
@@ -119,7 +121,11 @@ export default {
     },
     async getFilter(filter) {
       this.isLoading = true;
-      this.filterData = filter;
+      if (this.filterData !== filter) {
+        this.filterData = filter;
+        localStorage.removeItem("countries");
+        localStorage.removeItem("region");
+      }
       await this.countriesRequest(this.filterData);
       this.renderCountries = this.slice;
       this.isLoading = false;
@@ -131,12 +137,9 @@ export default {
 
       if (cc) {
         this.countries = cc;
-        localStorage.removeItem("countries");
         if (reg) {
           this.filterData = reg;
         }
-        localStorage.removeItem("countries");
-        localStorage.removeItem("region");
       } else {
         try {
           if (region && region !== "All") {

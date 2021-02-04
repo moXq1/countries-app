@@ -139,7 +139,7 @@ export default {
         localStorage.removeItem("region");
       } else {
         try {
-          if (region && region !== "all") {
+          if (region && region !== "All") {
             resp = await fetch(
               `https://restcountries.eu/rest/v2/region/${region}`
             );

@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="flag">
-      <img :src="flag" alt="flag" width="640" height="360"/>
+      <img :src="flag" alt="flag" width="640" height="360" />
     </div>
 
     <div class="details">
@@ -23,6 +23,7 @@
       <div class="borders">
         <p>
           <strong>Border countries:</strong>
+          <em v-if="border.length === 0">None </em>
         </p>
         <div>
           <span
@@ -138,8 +139,6 @@ p strong {
   white-space: nowrap;
 }
 
-
-
 @media (max-width: 1070px) {
   .content {
     grid-template-columns: 560px;
@@ -172,6 +171,16 @@ p strong {
 
   h2 {
     font-size: 24px;
+  }
+
+  .borders {
+    flex-direction: column;
+    padding: 0;
+    gap: 0.5rem;
+  }
+
+  .borders span {
+    margin: 0 5px 10px 0;
   }
 }
 </style>

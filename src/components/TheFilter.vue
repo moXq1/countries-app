@@ -11,7 +11,7 @@
       <li v-for="r in regions" :key="r" @click="getRegion" :data-country="r">
         {{ r }}
       </li>
-      <li @click="getRegion" data-country="all">All</li>
+      <li @click="getRegion" data-country="All">All</li>
     </ul>
   </div>
 </template>
